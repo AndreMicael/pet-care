@@ -40,20 +40,7 @@ export default function CaregiverList({ onBack, onSelectCaregiver }: CaregiverLi
       {/* Mobile Layout */}
       <div className="lg:hidden bg-white relative size-full overflow-y-auto">
         {/* Header */}
-        <div className="bg-[#4f30cb] h-[90px] w-full flex items-center justify-between px-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#ffb347] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">PC</span>
-            </div>
-            <h1 className="text-2xl font-bold text-[#ffb347] font-fredoka">PetCare</h1>
-          </div>
-          {onBack && (
-            <button onClick={onBack} className="text-white">
-              <ArrowUpDown className="w-6 h-6 rotate-90" />
-            </button>
-          )}
-        </div>
-
+        
         {/* Search Bar */}
         <div className="p-4">
           <div className="relative">
@@ -170,7 +157,7 @@ export default function CaregiverList({ onBack, onSelectCaregiver }: CaregiverLi
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden lg:block bg-white  shadow-sm overflow-hidden">
+      <div className="hidden lg:block bg-white rounded-lg shadow-sm overflow-hidden">
         {/* Header */}
         <div className="bg-[#4f30cb] text-white p-6">
           <div className="flex items-center justify-between">

@@ -1,11 +1,11 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useCaregiver } from '../../../hooks/useAPI';
-import CaregiverProfile from '../../(components)/CaregiverProfile';
-import LoadingSpinner from '../../(components)/LoadingSpinner';
+import { useCaregiver } from '../../../../hooks/useAPI';
+import BookingForm from '../../../(components)/BookingForm';
+import LoadingSpinner from '../../../(components)/LoadingSpinner';
 
-export default function CuidadorPage() {
+export default function AgendarPage() {
   const params = useParams();
   const cuidadorId = params.cuidador as string;
   const { caregiver, loading, error } = useCaregiver(cuidadorId);
@@ -33,7 +33,7 @@ export default function CuidadorPage() {
 
   return (
     <div className="min-h-screen">
-      <CaregiverProfile caregiver={caregiver} />
+      <BookingForm caregiver={caregiver} />
     </div>
   );
 }

@@ -1,12 +1,9 @@
-import React from 'react'
-import BuscarCuidador from './BuscarCuidador'
+import CaregiverList from '../(components)/CaregiverList';
 
-const Page = () => {
+export default function Page() {
   return (
-    <div>
-      <BuscarCuidador />
+    <div className="min-h-screen">
+      <CaregiverList />
     </div>
-  )
+  );
 }
-
-export default Page

@@ -1,12 +1,9 @@
-import Link from "next/link";
-
- 
+import SearchScreen from './(components)/SearchScreen';
 
 export default function Home() {
   return (
-    <div className="">
-   
-     
+    <div className="min-h-screen">
+      <SearchScreen />
     </div>
   );
 }

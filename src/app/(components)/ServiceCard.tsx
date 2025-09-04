@@ -59,7 +59,7 @@ const ServiceCard = (props: ServiceCardProps) => {
             className="w-16 h-16 rounded-full object-cover mr-4"
           />
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-800 mb-1">{title}</h3>
+            <h3 className="text-lg font-semibold text-gray-800 mb-1 font-fredoka">{title}</h3>
             {location && (
               <p className="text-sm text-gray-500 mb-2">📍 {location}</p>
             )}

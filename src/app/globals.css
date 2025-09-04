@@ -4,3 +4,22 @@
   --background: #ffffff;
   --foreground: #171717;
 }
+
+/* Font Classes */
+.font-fredoka {
+  font-family: var(--font-fredoka), sans-serif;
+}
+
+.font-inter {
+  font-family: var(--font-inter), sans-serif;
+}
+
+/* Default font for the app */
+body {
+  font-family: var(--font-inter), sans-serif;
+}
+
+/* Headings use Fredoka */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-fredoka), sans-serif;
+}

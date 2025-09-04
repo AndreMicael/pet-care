@@ -15,23 +15,54 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-model User {
+model Owner {
   id              String @id @default(cuid())
   name            String 
-  title           String
-  avatar          String?
   email           String @unique
   phone           String
   address         String
-  careFriend      Boolean @default(false)
-  rating          Float? @default(0)
+  avatar          String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   
   // Relacionamentos
   pets            Pet[]
-  reservationsAsOwner    Reservation[] @relation("PetOwner")
-  reservationsAsSitter   Reservation[] @relation("PetSitter")
+  reservations    Reservation[]
+  reviews         Review[]
+}
+
+model Sitter {
+  id              String @id @default(cuid())
+  name            String 
+  email           String @unique
+  phone           String
+  address         String
+  avatar          String?
+  bio             String?
+  experience      String?
+  rating          Float @default(0)
+  totalReviews    Int @default(0)
+  isActive        Boolean @default(true)
+  hourlyRate      Float?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relacionamentos
+  reservations    Reservation[]
+  specialties     SitterSpecialty[]
+  reviews         Review[]
+}
+
+model Specialty {
+  id              String @id @default(cuid())
+  name            String @unique
+  description     String?
+  isActive        Boolean @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relacionamentos
+  sitters         SitterSpecialty[]
 }
 
 model Pet {
@@ -46,7 +77,7 @@ model Pet {
   
   // Relacionamentos
   ownerId         String
-  owner           User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner           Owner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   reservations    ReservationPet[]
 }
 
@@ -62,12 +93,13 @@ model Reservation {
   
   // Relacionamentos
   ownerId         String
-  owner           User @relation("PetOwner", fields: [ownerId], references: [id])
+  owner           Owner @relation(fields: [ownerId], references: [id])
   sitterId        String
-  sitter          User @relation("PetSitter", fields: [sitterId], references: [id])
+  sitter          Sitter @relation(fields: [sitterId], references: [id])
   serviceId       String
   service         Service @relation(fields: [serviceId], references: [id])
   pets            ReservationPet[]
+  review          Review?
 }
 
 enum ReservationStatus {
@@ -114,4 +146,31 @@ model ServiceType {
   
   // Relacionamentos
   services        Service[]
+}
+
+// Tabela de junção para Sitter-Specialty
+model SitterSpecialty {
+  sitterId        String
+  sitter          Sitter @relation(fields: [sitterId], references: [id], onDelete: Cascade)
+  specialtyId     String
+  specialty       Specialty @relation(fields: [specialtyId], references: [id], onDelete: Cascade)
+  
+  @@id([sitterId, specialtyId])
+}
+
+// Modelo para comentários/avaliações dos sitters
+model Review {
+  id              String @id @default(cuid())
+  rating          Int // 1-5 estrelas
+  comment         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relacionamentos
+  sitterId        String
+  sitter          Sitter @relation(fields: [sitterId], references: [id], onDelete: Cascade)
+  ownerId         String
+  owner           Owner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  reservationId   String @unique
+  reservation     Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
 }

@@ -11,7 +11,7 @@ export default function ConfirmacaoPage() {
   const cuidadorId = params.cuidador as string;
   const { caregiver, loading, error } = useCaregiver(cuidadorId);
 
-  // Simula dados do agendamento (em uma aplicação real, estes dados viriam da API)
+  // Dados do agendamento vindos dos parâmetros da URL
   const bookingData = {
     caregiverId: cuidadorId,
     petName: searchParams.get('petName') || 'Rex',

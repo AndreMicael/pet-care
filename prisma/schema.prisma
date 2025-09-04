@@ -20,15 +20,34 @@ model Owner {
   name            String 
   email           String @unique
   phone           String
-  address         String
   avatar          String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   
   // Relacionamentos
+  address         Address?
   pets            Pet[]
   reservations    Reservation[]
   reviews         Review[]
+}
+
+model Address {
+  id              String @id @default(cuid())
+  street          String
+  number          String
+  city            String
+  state           String
+  cep             String
+  complemento     String?
+  neighborhood    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relacionamentos
+  ownerId         String? @unique
+  owner           Owner? @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  sitterId        String? @unique
+  sitter          Sitter? @relation(fields: [sitterId], references: [id], onDelete: Cascade)
 }
 
 model Sitter {
@@ -36,7 +55,6 @@ model Sitter {
   name            String 
   email           String @unique
   phone           String
-  address         String
   avatar          String?
   bio             String?
   experience      String?
@@ -48,6 +66,7 @@ model Sitter {
   updatedAt       DateTime @updatedAt
   
   // Relacionamentos
+  address         Address?
   reservations    Reservation[]
   specialties     SitterSpecialty[]
   reviews         Review[]

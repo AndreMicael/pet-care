@@ -11,7 +11,7 @@ import { ArrowLeft, Heart, Calendar, Send, Info, Star } from 'lucide-react';
 import { createBooking } from '../../hooks/useAPI';
 import { ImageWithFallback } from '@/app/(components)/ImageWithFallback';
 import { useRouter } from 'next/navigation';
-import type { Caregiver } from './CaregiverList';
+import type { Caregiver } from '@/app/(components)/CaregiverList';
 
 interface BookingFormProps {
   caregiver: Caregiver;
@@ -68,9 +68,18 @@ export default function BookingForm({ caregiver, onBack, onSubmit }: BookingForm
     try {
       const bookingData: BookingData = {
         caregiverId: caregiver.id,
-        ...formData,
+        petName: formData.petName,
+        petType: formData.petType,
+        petAge: formData.petAge,
+        serviceType: formData.serviceType,
         startDate,
-        endDate
+        endDate,
+        duration: formData.duration,
+        specialRequirements: formData.specialRequirements,
+        ownerName: formData.ownerName,
+        ownerPhone: formData.ownerPhone,
+        ownerEmail: formData.ownerEmail,
+        emergencyContact: formData.emergencyContact
       };
 
       const response = await createBooking(bookingData);
@@ -79,7 +88,23 @@ export default function BookingForm({ caregiver, onBack, onSubmit }: BookingForm
         if (onSubmit) {
           onSubmit(bookingData);
         } else {
-          router.push(`/buscar-cuidador/${caregiver.id}/confirmacao`);
+          // Construir URL com parâmetros de query
+          const params = new URLSearchParams({
+            petName: formData.petName,
+            petType: formData.petType,
+            petAge: formData.petAge,
+            serviceType: formData.serviceType,
+            duration: formData.duration,
+            specialRequirements: formData.specialRequirements,
+            ownerName: formData.ownerName,
+            ownerPhone: formData.ownerPhone,
+            ownerEmail: formData.ownerEmail,
+            emergencyContact: formData.emergencyContact,
+            startDate: startDate ? startDate.toISOString() : '',
+            endDate: endDate ? endDate.toISOString() : ''
+          });
+          
+          router.push(`/buscar-cuidador/${caregiver.id}/confirmacao?${params.toString()}`);
         }
       } else {
         console.error('Failed to create booking:', response.error);

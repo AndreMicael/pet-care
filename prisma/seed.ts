@@ -173,15 +173,16 @@ async function main() {
     {
       name: 'Ana Silva',
       email: 'ana.silva@email.com',
-      phone: '(11) 99999-1111',
+      phone: '(65) 99999-1111',
       address: {
         street: 'Rua das Flores',
         number: '123',
-        city: 'São Paulo',
-        state: 'SP',
-        cep: '01234-567',
+        city: 'CUIABA',
+        zipCode: '78000-000',
         neighborhood: 'Centro',
-        complemento: 'Apto 45'
+        complement: 'Apto 45',
+        latitude: -15.6014,
+        longitude: -56.0979
       },
       bio: 'Sou apaixonada por animais desde criança e tenho mais de 5 anos de experiência cuidando de pets de todos os tamanhos. Ofereço um ambiente seguro, carinhoso e divertido para seu companheiro.',
       experience: '5 anos de experiência com pets',
@@ -193,15 +194,16 @@ async function main() {
     {
       name: 'Carlos Santos',
       email: 'carlos.santos@email.com',
-      phone: '(11) 99999-2222',
+      phone: '(65) 99999-2222',
       address: {
-        street: 'Av. Paulista',
+        street: 'Av. Fernando Corrêa da Costa',
         number: '456',
-        city: 'São Paulo',
-        state: 'SP',
-        cep: '01310-100',
-        neighborhood: 'Bela Vista',
-        complemento: 'Sala 12'
+        city: 'CUIABA',
+        zipCode: '78000-000',
+        neighborhood: 'Boa Esperança',
+        complement: 'Sala 12',
+        latitude: -15.6014,
+        longitude: -56.0979
       },
       bio: 'Veterinário com 7 anos de experiência, especializado em cuidados domiciliares e emergências. Atendo 24 horas por dia, 7 dias por semana.',
       experience: '7 anos como veterinário',
@@ -213,15 +215,16 @@ async function main() {
     {
       name: 'Maria Oliveira',
       email: 'maria.oliveira@email.com',
-      phone: '(11) 99999-3333',
+      phone: '(65) 99999-3333',
       address: {
         street: 'Rua dos Pássaros',
         number: '789',
-        city: 'São Paulo',
-        state: 'SP',
-        cep: '04567-890',
-        neighborhood: 'Vila Madalena',
-        complemento: 'Casa 2'
+        city: 'VARZEA_GRANDE',
+        zipCode: '78100-000',
+        neighborhood: 'Centro',
+        complement: 'Casa 2',
+        latitude: -15.6467,
+        longitude: -56.1325
       },
       bio: 'Especialista em cuidados com gatos e pets idosos. Tenho experiência com animais que precisam de atenção especial e medicação.',
       experience: '4 anos com gatos e pets idosos',
@@ -233,15 +236,16 @@ async function main() {
     {
       name: 'João Costa',
       email: 'joao.costa@email.com',
-      phone: '(11) 99999-4444',
+      phone: '(65) 99999-4444',
       address: {
         street: 'Rua dos Cães',
         number: '321',
-        city: 'São Paulo',
-        state: 'SP',
-        cep: '05678-901',
-        neighborhood: 'Pinheiros',
-        complemento: 'Apto 78'
+        city: 'CUIABA',
+        zipCode: '78000-000',
+        neighborhood: 'Porto',
+        complement: 'Apto 78',
+        latitude: -15.6014,
+        longitude: -56.0979
       },
       bio: 'Especialista em passeios e exercícios para cães ativos. Trabalho principalmente com raças grandes que precisam de muita atividade física.',
       experience: '3 anos como dog walker',
@@ -253,15 +257,16 @@ async function main() {
     {
       name: 'Lucia Ferreira',
       email: 'lucia.ferreira@email.com',
-      phone: '(11) 99999-5555',
+      phone: '(65) 99999-5555',
       address: {
         street: 'Rua das Árvores',
         number: '654',
-        city: 'São Paulo',
-        state: 'SP',
-        cep: '06789-012',
-        neighborhood: 'Jardins',
-        complemento: 'Casa 5'
+        city: 'VARZEA_GRANDE',
+        zipCode: '78100-000',
+        neighborhood: 'Jardim Glória',
+        complement: 'Casa 5',
+        latitude: -15.6467,
+        longitude: -56.1325
       },
       bio: 'Cuidadora especializada em pets idosos e com necessidades especiais. Ofereço serviços de fisioterapia e cuidados médicos básicos.',
       experience: '6 anos com pets especiais',
@@ -275,36 +280,59 @@ async function main() {
   console.log('🌱 Iniciando seed dos cuidadores...')
 
   for (const sitterData of sitters) {
-    const sitter = await prisma.sitter.upsert({
+    // Criar usuário primeiro
+    const user = await prisma.user.upsert({
       where: { email: sitterData.email },
       update: {},
       create: {
         name: sitterData.name,
         email: sitterData.email,
-        phone: sitterData.phone,
-        bio: sitterData.bio,
-        experience: sitterData.experience,
+        userType: 'SITTER',
+        emailVerified: new Date()
+      }
+    })
+
+      // Criar endereço
+  const address = await prisma.address.upsert({
+    where: { 
+      street_number_city: {
+        street: sitterData.address.street,
+        number: sitterData.address.number,
+        city: sitterData.address.city as 'CUIABA' | 'VARZEA_GRANDE'
+      }
+    },
+    update: {},
+    create: {
+      street: sitterData.address.street,
+      number: sitterData.address.number,
+      complement: sitterData.address.complement,
+      neighborhood: sitterData.address.neighborhood,
+      city: sitterData.address.city as 'CUIABA' | 'VARZEA_GRANDE',
+      zipCode: sitterData.address.zipCode,
+      latitude: sitterData.address.latitude,
+      longitude: sitterData.address.longitude
+    }
+  })
+
+  // Criar sitter
+  const sitter = await prisma.sitter.upsert({
+    where: { email: sitterData.email },
+    update: {},
+    create: {
+      userId: user.id,
+      name: sitterData.name,
+      email: sitterData.email,
+      phone: sitterData.phone,
+      addressId: address.id,
+      bio: sitterData.bio,
+      experience: sitterData.experience,
         rating: sitterData.rating,
         totalReviews: sitterData.totalReviews,
         hourlyRate: sitterData.hourlyRate
       }
     })
 
-    // Criar endereço para o cuidador
-    await prisma.address.upsert({
-      where: { sitterId: sitter.id },
-      update: {},
-      create: {
-        street: sitterData.address.street,
-        number: sitterData.address.number,
-        city: sitterData.address.city,
-        state: sitterData.address.state,
-        cep: sitterData.address.cep,
-        neighborhood: sitterData.address.neighborhood,
-        complemento: sitterData.address.complemento,
-        sitterId: sitter.id
-      }
-    })
+    // Endereço já está incluído no campo address do sitter
 
     // Associar especialidades ao cuidador
     for (const specialtyName of sitterData.specialties) {

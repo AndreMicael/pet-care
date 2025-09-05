@@ -50,7 +50,7 @@ export async function GET(
       services: sitter.specialties.map(s => s.specialty.name),
       about: sitter.bio || 'Cuidador experiente e apaixonado por animais.',
       experience: sitter.experience,
-      address: sitter.address ? `${sitter.address.street}, ${sitter.address.number} - ${sitter.address.neighborhood}, ${sitter.address.city} - ${sitter.address.state}` : 'Endereço não informado',
+      address: sitter.address ? `${sitter.address.street}, ${sitter.address.number} - ${sitter.address.neighborhood}, ${sitter.address.city}` : 'Endereço não informado',
       phone: sitter.phone,
       email: sitter.email,
       reviewList: sitter.reviews.map(review => ({

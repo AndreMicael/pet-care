@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from '../(components)/ui/button'
 import { Input } from '../(components)/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../(components)/ui/card'
@@ -11,6 +12,11 @@ const Cadastro = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [userType, setUserType] = useState<'owner' | 'sitter'>('owner')
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const router = useRouter()
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -28,12 +34,63 @@ const Cadastro = () => {
       ...prev,
       [name]: value
     }))
+    // Limpar erros quando usuário digitar
+    if (error) setError('')
+    if (success) setSuccess('')
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Aqui será implementada a lógica de cadastro
-    console.log('Dados do cadastro:', { ...formData, userType })
+    setIsLoading(true)
+    setError('')
+    setSuccess('')
+
+    // Validações
+    if (formData.password !== formData.confirmPassword) {
+      setError('As senhas não coincidem')
+      setIsLoading(false)
+      return
+    }
+
+    if (formData.password.length < 6) {
+      setError('A senha deve ter pelo menos 6 caracteres')
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+          userType,
+          bio: formData.bio,
+          experience: formData.experience,
+          hourlyRate: formData.hourlyRate,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setSuccess('Conta criada com sucesso! Redirecionando...')
+        setTimeout(() => {
+          router.push('/login')
+        }, 2000)
+      } else {
+        setError(data.error || 'Erro ao criar conta')
+      }
+    } catch (error) {
+      setError('Erro ao criar conta. Tente novamente.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -96,6 +153,19 @@ const Cadastro = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Exibir mensagens */}
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
+              
+              {success && (
+                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+                  {success}
+                </div>
+              )}
+
               {/* Informações básicas */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Nome */}
@@ -292,9 +362,10 @@ const Cadastro = () => {
               {/* Botão de cadastro */}
               <Button 
                 type="submit" 
-                className="w-full h-12 bg-[#4f30cb] hover:bg-[#4527a8] text-white font-medium font-inter transition-all duration-200 shadow-lg hover:shadow-xl"
+                disabled={isLoading}
+                className="w-full h-12 bg-[#4f30cb] hover:bg-[#4527a8] text-white font-medium font-inter transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50"
               >
-                Criar conta
+                {isLoading ? 'Criando conta...' : 'Criar conta'}
               </Button>
             </form>
 

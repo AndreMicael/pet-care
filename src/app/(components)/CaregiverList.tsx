@@ -37,9 +37,9 @@ export default function CaregiverList({ onBack, onSelectCaregiver }: CaregiverLi
   
   return (
     <div className="w-full">
-      {/* Mobile Layout */}
+    
       <div className="lg:hidden bg-white relative size-full overflow-y-auto">
-        {/* Header */}
+    
         
         {/* Search Bar */}
         <div className="p-4">
@@ -157,7 +157,7 @@ export default function CaregiverList({ onBack, onSelectCaregiver }: CaregiverLi
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden lg:block bg-white rounded-lg shadow-sm overflow-hidden">
+      <div className="hidden lg:block bg-white shadow-sm overflow-hidden">
         {/* Header */}
         <div className="bg-[#4f30cb] text-white p-6">
           <div className="flex items-center justify-between">

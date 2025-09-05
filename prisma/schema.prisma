@@ -1,124 +1,158 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Owner {
-  id              String @id @default(cuid())
-  name            String 
-  email           String @unique
-  phone           String
-  avatar          String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Relacionamentos
-  address         Address?
-  pets            Pet[]
-  reservations    Reservation[]
-  reviews         Review[]
-}
-
-model Address {
-  id              String @id @default(cuid())
-  street          String
-  number          String
-  city            String
-  state           String
-  cep             String
-  complemento     String?
-  neighborhood    String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Relacionamentos
-  ownerId         String? @unique
-  owner           Owner? @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  sitterId        String? @unique
-  sitter          Sitter? @relation(fields: [sitterId], references: [id], onDelete: Cascade)
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  phone        String
+  address      String
+  avatar       String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  pets         Pet[]
+  reservations Reservation[]
+  reviews      Review[]
 }
 
 model Sitter {
-  id              String @id @default(cuid())
-  name            String 
-  email           String @unique
-  phone           String
-  avatar          String?
-  bio             String?
-  experience      String?
-  rating          Float @default(0)
-  totalReviews    Int @default(0)
-  isActive        Boolean @default(true)
-  hourlyRate      Float?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Relacionamentos
-  address         Address?
-  reservations    Reservation[]
-  specialties     SitterSpecialty[]
-  reviews         Review[]
+  id           String            @id @default(cuid())
+  name         String
+  email        String            @unique
+  phone        String
+  address      String
+  avatar       String?
+  bio          String?
+  experience   String?
+  rating       Float             @default(0)
+  totalReviews Int               @default(0)
+  isActive     Boolean           @default(true)
+  hourlyRate   Float?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  reservations Reservation[]
+  reviews      Review[]
+  specialties  SitterSpecialty[]
 }
 
 model Specialty {
-  id              String @id @default(cuid())
-  name            String @unique
-  description     String?
-  isActive        Boolean @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Relacionamentos
-  sitters         SitterSpecialty[]
+  id          String            @id @default(cuid())
+  name        String            @unique
+  description String?
+  isActive    Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  sitters     SitterSpecialty[]
 }
 
 model Pet {
-  id              String @id @default(cuid())
-  name            String
-  kind            String
-  breed           String?
-  age             Int?
-  comorbidity     String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Relacionamentos
-  ownerId         String
-  owner           Owner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  reservations    ReservationPet[]
+  id           String           @id @default(cuid())
+  name         String
+  kind         String
+  breed        String?
+  age          Int?
+  comorbidity  String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  ownerId      String
+  owner        Owner            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  reservations ReservationPet[]
+
+  @@index([ownerId], map: "Pet_ownerId_fkey")
 }
 
 model Reservation {
-  id              String @id @default(cuid())
-  startDate       DateTime
-  endDate         DateTime
-  status          ReservationStatus @default(PENDING)
-  totalPrice      Float
-  observations    String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Relacionamentos
-  ownerId         String
-  owner           Owner @relation(fields: [ownerId], references: [id])
-  sitterId        String
-  sitter          Sitter @relation(fields: [sitterId], references: [id])
-  serviceId       String
-  service         Service @relation(fields: [serviceId], references: [id])
-  pets            ReservationPet[]
-  review          Review?
+  id           String            @id @default(cuid())
+  startDate    DateTime
+  endDate      DateTime
+  status       ReservationStatus @default(PENDING)
+  totalPrice   Float
+  observations String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  ownerId      String
+  sitterId     String
+  serviceId    String
+  owner        Owner             @relation(fields: [ownerId], references: [id])
+  service      Service           @relation(fields: [serviceId], references: [id])
+  sitter       Sitter            @relation(fields: [sitterId], references: [id])
+  pets         ReservationPet[]
+  review       Review?
+
+  @@index([ownerId], map: "Reservation_ownerId_fkey")
+  @@index([serviceId], map: "Reservation_serviceId_fkey")
+  @@index([sitterId], map: "Reservation_sitterId_fkey")
+}
+
+model Service {
+  id            String        @id @default(cuid())
+  name          String
+  description   String?
+  price         Float
+  duration      Int
+  isActive      Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  serviceTypeId String
+  reservations  Reservation[]
+  serviceType   ServiceType   @relation(fields: [serviceTypeId], references: [id])
+
+  @@index([serviceTypeId], map: "Service_serviceTypeId_fkey")
+}
+
+model ReservationPet {
+  reservationId String
+  petId         String
+  pet           Pet         @relation(fields: [petId], references: [id], onDelete: Cascade)
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+
+  @@id([reservationId, petId])
+  @@index([petId], map: "ReservationPet_petId_fkey")
+}
+
+model ServiceType {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  services    Service[]
+}
+
+model SitterSpecialty {
+  sitterId    String
+  specialtyId String
+  sitter      Sitter    @relation(fields: [sitterId], references: [id], onDelete: Cascade)
+  specialty   Specialty @relation(fields: [specialtyId], references: [id], onDelete: Cascade)
+
+  @@id([sitterId, specialtyId])
+  @@index([specialtyId], map: "SitterSpecialty_specialtyId_fkey")
+}
+
+model Review {
+  id            String      @id @default(cuid())
+  rating        Int
+  comment       String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  sitterId      String
+  ownerId       String
+  reservationId String      @unique
+  owner         Owner       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  sitter        Sitter      @relation(fields: [sitterId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId], map: "Review_ownerId_fkey")
+  @@index([sitterId], map: "Review_sitterId_fkey")
 }
 
 enum ReservationStatus {
@@ -127,69 +161,4 @@ enum ReservationStatus {
   IN_PROGRESS
   COMPLETED
   CANCELLED
-}
-
-model Service {
-  id              String @id @default(cuid())
-  name            String
-  description     String?
-  price           Float
-  duration        Int // em minutos
-  isActive        Boolean @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Relacionamentos
-  serviceTypeId   String
-  serviceType     ServiceType @relation(fields: [serviceTypeId], references: [id])
-  reservations    Reservation[]
-}
-
-// Tabela de junção para Pet-Reservation
-model ReservationPet {
-  reservationId   String
-  reservation     Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
-  petId           String
-  pet             Pet @relation(fields: [petId], references: [id], onDelete: Cascade)
-  
-  @@id([reservationId, petId])
-}
-
-model ServiceType {
-  id              String @id @default(cuid())
-  name            String @unique
-  description     String?
-  isActive        Boolean @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Relacionamentos
-  services        Service[]
-}
-
-// Tabela de junção para Sitter-Specialty
-model SitterSpecialty {
-  sitterId        String
-  sitter          Sitter @relation(fields: [sitterId], references: [id], onDelete: Cascade)
-  specialtyId     String
-  specialty       Specialty @relation(fields: [specialtyId], references: [id], onDelete: Cascade)
-  
-  @@id([sitterId, specialtyId])
-}
-
-// Modelo para comentários/avaliações dos sitters
-model Review {
-  id              String @id @default(cuid())
-  rating          Int // 1-5 estrelas
-  comment         String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Relacionamentos
-  sitterId        String
-  sitter          Sitter @relation(fields: [sitterId], references: [id], onDelete: Cascade)
-  ownerId         String
-  owner           Owner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  reservationId   String @unique
-  reservation     Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
 }

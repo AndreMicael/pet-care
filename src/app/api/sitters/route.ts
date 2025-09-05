@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@/generated/prisma';
 
-const prisma = new PrismaClient();
+// Instanciar PrismaClient de forma mais robusta
+let prisma: PrismaClient;
+
+if (process.env.NODE_ENV === 'production') {
+  prisma = new PrismaClient();
+} else {
+  if (!global.prisma) {
+    global.prisma = new PrismaClient();
+  }
+  prisma = global.prisma;
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -72,8 +82,13 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Erro ao buscar cuidadores:', error);
+    console.error('Detalhes do erro:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      { error: 'Erro interno do servidor', details: error.message },
       { status: 500 }
     );
   }

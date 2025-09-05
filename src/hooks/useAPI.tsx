@@ -91,6 +91,8 @@ const mockCaregivers: Caregiver[] = [
 
 // Função genérica para chamadas de API
 const apiCall = async (endpoint: string, options: RequestInit = {}) => {
+  console.log('Fazendo chamada para:', endpoint);
+  
   const response = await fetch(endpoint, {
     headers: {
       'Content-Type': 'application/json',
@@ -99,12 +101,17 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     ...options,
   });
 
+  console.log('Resposta recebida:', response.status, response.statusText);
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
+    console.error('Erro na API:', errorData);
     throw new Error(errorData.error || `API call failed: ${response.statusText}`);
   }
 
-  return response.json();
+  const data = await response.json();
+  console.log('Dados recebidos:', data);
+  return data;
 };
 
 // Hook para buscar cuidadores

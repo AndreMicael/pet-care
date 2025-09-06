@@ -1,0 +1,85 @@
+/* Estilos personalizados para o Google Forms */
+
+/* Container do iframe */
+.google-form-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Iframe do Google Forms */
+.google-form-iframe {
+  width: 100%;
+  min-height: 600px;
+  border: none;
+  border-radius: 8px;
+  background: white;
+}
+
+/* Overlay para melhorar a aparência */
+.google-form-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(79, 48, 203, 0.02) 0%, transparent 10%);
+  border-radius: 8px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .google-form-iframe {
+    min-height: 500px;
+  }
+}
+
+/* Melhorias para o formulário */
+.google-form-container iframe {
+  filter: brightness(1.02) contrast(1.01);
+}
+
+/* Loading state */
+.google-form-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* Error state */
+.google-form-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  text-align: center;
+  padding: 20px;
+}
+
+.google-form-error h3 {
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.google-form-error p {
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.google-form-error a {
+  color: #4f30cb;
+  text-decoration: underline;
+  font-weight: 500;
+}

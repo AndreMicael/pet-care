@@ -27,7 +27,7 @@ const Navbar = () => {
           Buscar Cuidador
         </Link>
         
-        {status === "loading" ? (
+        {/* {status === "loading" ? (
           <div className="bg-white/20 px-4 py-2 rounded-lg">
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           </div>
@@ -62,7 +62,13 @@ const Navbar = () => {
           >
             Entrar
           </Link>
-        )}
+        )} */}
+        <Link 
+          href="/cadastro-petsitter"
+          className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors font-medium"
+        >
+          Cadastrar Cuidador
+        </Link>
       </div>
     </div>
   )

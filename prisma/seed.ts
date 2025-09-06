@@ -3,6 +3,39 @@ import { PrismaClient } from '../src/generated/prisma'
 const prisma = new PrismaClient()
 
 async function main() {
+  // Criar serviços de pets iniciais
+  const petServices = [
+    {
+      name: 'Creche Meio Período',
+      description: 'Cuidado durante meio período (até 4 horas)'
+    },
+    {
+      name: 'Creche Integral',
+      description: 'Cuidado durante período integral (8 horas)'
+    },
+    {
+      name: 'Hotelzinho',
+      description: 'Hospedagem noturna para pets'
+    },
+    {
+      name: 'Passeio',
+      description: 'Passeio com o pet'
+    }
+  ]
+
+  console.log('🌱 Iniciando seed dos serviços de pets...')
+
+  for (const service of petServices) {
+    await prisma.petService.upsert({
+      where: { name: service.name },
+      update: {},
+      create: service
+    })
+    console.log(`✅ Serviço de pet criado: ${service.name}`)
+  }
+
+  console.log('✅ Serviços de pets criados com sucesso!')
+
   // Criar especialidades iniciais
   const specialties = [
     {
@@ -266,7 +299,7 @@ async function main() {
         neighborhood: 'Jardim Glória',
         complement: 'Casa 5',
         latitude: -15.6467,
-        longitude: -56.1325
+        longitude: -56.1
       },
       bio: 'Cuidadora especializada em pets idosos e com necessidades especiais. Ofereço serviços de fisioterapia e cuidados médicos básicos.',
       experience: '6 anos com pets especiais',
@@ -355,6 +388,32 @@ async function main() {
           }
         })
       }
+    }
+
+    // Associar serviços oferecidos pelo cuidador
+    const availableServices = await prisma.petService.findMany({
+      where: { isActive: true }
+    })
+
+    // Cada cuidador oferece alguns serviços aleatórios
+    const servicesToOffer = availableServices.slice(0, Math.floor(Math.random() * 3) + 2) // 2-4 serviços
+
+    for (const service of servicesToOffer) {
+      await prisma.sitterService.upsert({
+        where: {
+          sitterId_serviceId: {
+            sitterId: sitter.id,
+            serviceId: service.id
+          }
+        },
+        update: {},
+        create: {
+          sitterId: sitter.id,
+          serviceId: service.id,
+          price: Math.floor(Math.random() * 50) + 30, // Preço entre R$ 30-80
+          isAvailable: true
+        }
+      })
     }
 
     console.log(`✅ Cuidador criado: ${sitterData.name}`)

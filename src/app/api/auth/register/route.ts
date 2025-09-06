@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Erro no cadastro:", error)
     console.error("Detalhes do erro:", {
       message: error.message,

@@ -5,8 +5,6 @@ interface Caregiver {
   id: string;
   name: string;
   type: string;
-  rating: number;
-  reviews: number;
   distance: string;
   price: string;
   image: string;
@@ -16,15 +14,6 @@ interface Caregiver {
   address?: string;
   phone?: string;
   email?: string;
-  reviewList?: Review[];
-}
-
-interface Review {
-  id: string;
-  rating: number;
-  comment?: string;
-  ownerName: string;
-  date: Date;
 }
 
 interface BookingData {
@@ -55,8 +44,6 @@ const mockCaregivers: Caregiver[] = [
     id: '1',
     name: 'Ana Silva',
     type: 'Cuidador de Pets',
-    rating: 4.8,
-    reviews: 127,
     distance: '2.5 km',
     price: 'R$ 80/dia',
     image: 'https://i.pravatar.cc/150?img=44',
@@ -67,8 +54,6 @@ const mockCaregivers: Caregiver[] = [
     id: '2',
     name: 'Carlos Santos',
     type: 'Veterinário',
-    rating: 4.9,
-    reviews: 89,
     distance: '1.8 km',
     price: 'R$ 120/dia',
     image: 'https://i.pravatar.cc/150?img=13',
@@ -79,8 +64,6 @@ const mockCaregivers: Caregiver[] = [
     id: '3',
     name: 'Maria Oliveira',
     type: 'Pet Sitter',
-    rating: 4.7,
-    reviews: 156,
     distance: '3.2 km',
     price: 'R$ 90/dia',
     image: 'https://i.pravatar.cc/150?img=25',
@@ -126,31 +109,29 @@ export const useCaregivers = (filters?: { serviceType?: string; location?: strin
         setLoading(true);
         setError(null);
         
-        // Construir query string com filtros
-        const queryParams = new URLSearchParams();
+        // Construir URL com filtros
+        const url = new URL('/api/sitters', window.location.origin);
         if (filters?.serviceType) {
-          queryParams.append('serviceType', filters.serviceType);
+          url.searchParams.set('serviceType', filters.serviceType);
         }
         if (filters?.location) {
-          queryParams.append('location', filters.location);
+          url.searchParams.set('location', filters.location);
         }
-
-        const queryString = queryParams.toString();
-        const endpoint = `/api/sitters${queryString ? `?${queryString}` : ''}`;
         
-        const response = await apiCall(endpoint);
+        const response = await fetch(url.toString());
+        const data = await response.json();
         
-        if (response.success) {
-          setCaregivers(response.caregivers);
+        if (data.success && data.caregivers) {
+          setCaregivers(data.caregivers);
         } else {
-          throw new Error(response.error || 'Erro ao carregar cuidadores');
+          // Fallback para dados mock se a API falhar
+          setCaregivers(mockCaregivers);
         }
       } catch (err) {
         console.error('Erro ao buscar cuidadores:', err);
-        setError(err instanceof Error ? err.message : 'Erro ao carregar cuidadores');
-        
         // Fallback para dados mock em caso de erro
         setCaregivers(mockCaregivers);
+        setError('Erro ao carregar cuidadores');
       } finally {
         setLoading(false);
       }
@@ -174,17 +155,22 @@ export const useCaregiver = (id: string) => {
         setLoading(true);
         setError(null);
         
-        const response = await apiCall(`/api/sitters/${id}`);
+        const response = await fetch(`/api/sitters/${id}`);
+        const data = await response.json();
         
-        if (response.success) {
-          setCaregiver(response.caregiver);
+        if (data.success && data.caregiver) {
+          setCaregiver(data.caregiver);
         } else {
-          throw new Error(response.error || 'Erro ao carregar cuidador');
+          // Fallback para dados mock se a API falhar
+          const mockCaregiver = mockCaregivers.find(c => c.id === id);
+          if (mockCaregiver) {
+            setCaregiver(mockCaregiver);
+          } else {
+            setError('Cuidador não encontrado');
+          }
         }
       } catch (err) {
         console.error('Erro ao buscar cuidador:', err);
-        setError(err instanceof Error ? err.message : 'Erro ao carregar cuidador');
-        
         // Fallback para dados mock em caso de erro
         const mockCaregiver = mockCaregivers.find(c => c.id === id);
         if (mockCaregiver) {
@@ -205,100 +191,83 @@ export const useCaregiver = (id: string) => {
   return { caregiver, loading, error };
 };
 
-// Função para criar uma reserva
+// Função para criar uma reserva (mockada para MVP)
 export const createBooking = async (bookingData: BookingData): Promise<APIResponse<any>> => {
-  try {
-    console.log('Criando reserva:', bookingData);
-    
-    const response = await apiCall('/api/reservations', {
-      method: 'POST',
-      body: JSON.stringify(bookingData)
-    });
-    
-    if (response.success) {
-      return {
-        success: true,
-        data: {
-          id: response.reservation.id,
-          ...response.reservation,
-          status: 'pending',
-          createdAt: new Date().toISOString()
-        }
-      };
-    } else {
-      throw new Error(response.error || 'Erro ao criar reserva');
+  // Simular delay de processamento
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  
+  // Retornar dados mockados
+  return {
+    success: true,
+    data: {
+      id: `booking_${Date.now()}`,
+      ...bookingData,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      totalPrice: 80.00
     }
-  } catch (error) {
-    console.error('Erro ao criar reserva:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Erro ao criar reserva'
-    };
-  }
+  };
 };
 
-// Função para buscar uma reserva
+// Função para buscar uma reserva (mockada para MVP)
 export const getBooking = async (bookingId: string): Promise<APIResponse<any>> => {
-  try {
-    const response = await apiCall(`/api/reservations/${bookingId}`);
-    
-    if (response.success) {
-      return {
-        success: true,
-        data: response.reservation
-      };
-    } else {
-      throw new Error(response.error || 'Erro ao buscar reserva');
+  // Simular delay de carregamento
+  await new Promise(resolve => setTimeout(resolve, 800));
+  
+  // Retornar dados mockados
+  return {
+    success: true,
+    data: {
+      id: bookingId,
+      status: 'pending',
+      caregiverId: '1',
+      petName: 'Rex',
+      petType: 'Cachorro',
+      startDate: new Date().toISOString(),
+      endDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      totalPrice: 80.00,
+      createdAt: new Date().toISOString()
     }
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Erro ao buscar agendamento'
-    };
-  }
+  };
 };
 
-// Função para atualizar status de uma reserva
+// Função para atualizar status de uma reserva (mockada para MVP)
 export const updateBookingStatus = async (bookingId: string, status: string, message?: string): Promise<APIResponse<any>> => {
-  try {
-    const response = await apiCall(`/api/reservations/${bookingId}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ status, message })
-    });
-    
-    if (response.success) {
-      return {
-        success: true,
-        data: response.reservation
-      };
-    } else {
-      throw new Error(response.error || 'Erro ao atualizar reserva');
+  // Simular delay de processamento
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  // Retornar dados mockados
+  return {
+    success: true,
+    data: {
+      id: bookingId,
+      status: status,
+      message: message,
+      updatedAt: new Date().toISOString()
     }
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Erro ao atualizar agendamento'
-    };
-  }
+  };
 };
 
-// Função para buscar reservas de um cuidador
+// Função para buscar reservas de um cuidador (mockada para MVP)
 export const getCaregiverBookings = async (caregiverId: string): Promise<APIResponse<any[]>> => {
-  try {
-    const response = await apiCall(`/api/reservations?sitterId=${caregiverId}`);
-    
-    if (response.success) {
-      return {
-        success: true,
-        data: response.reservations
-      };
-    } else {
-      throw new Error(response.error || 'Erro ao buscar reservas');
-    }
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Erro ao buscar agendamentos'
-    };
-  }
+  // Simular delay de carregamento
+  await new Promise(resolve => setTimeout(resolve, 800));
+  
+  // Retornar dados mockados
+  return {
+    success: true,
+    data: [
+      {
+        id: 'booking_1',
+        caregiverId: caregiverId,
+        petName: 'Rex',
+        petType: 'Cachorro',
+        startDate: new Date().toISOString(),
+        endDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        status: 'pending',
+        totalPrice: 80.00,
+        createdAt: new Date().toISOString()
+      }
+    ]
+  };
 };

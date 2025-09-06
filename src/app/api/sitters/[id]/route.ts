@@ -5,10 +5,10 @@ const prisma = new PrismaClient();
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const sitterId = params.id;
+    const { id: sitterId } = await params;
 
     const sitter = await prisma.sitter.findUnique({
       where: { id: sitterId },
@@ -17,6 +17,11 @@ export async function GET(
         specialties: {
           include: {
             specialty: true
+          }
+        },
+        offeredServices: {
+          include: {
+            service: true
           }
         },
         reviews: {
@@ -42,24 +47,15 @@ export async function GET(
       id: sitter.id,
       name: sitter.name,
       type: sitter.specialties.map(s => s.specialty.name).join(', ') || 'Cuidador',
-      rating: sitter.rating,
-      reviews: sitter.totalReviews,
       distance: '2.5 km', // Mock - pode ser calculado com coordenadas reais
       price: sitter.hourlyRate ? `R$ ${sitter.hourlyRate.toFixed(2)}/hora` : 'R$ 50,00/hora',
       image: sitter.avatar || '/placeholder-pet.jpg',
-      services: sitter.specialties.map(s => s.specialty.name),
+      services: sitter.offeredServices.map(s => s.service.name),
       about: sitter.bio || 'Cuidador experiente e apaixonado por animais.',
       experience: sitter.experience,
       address: sitter.address ? `${sitter.address.street}, ${sitter.address.number} - ${sitter.address.neighborhood}, ${sitter.address.city}` : 'Endereço não informado',
       phone: sitter.phone,
-      email: sitter.email,
-      reviewList: sitter.reviews.map(review => ({
-        id: review.id,
-        rating: review.rating,
-        comment: review.comment,
-        ownerName: review.owner.name,
-        date: review.createdAt
-      }))
+      email: sitter.email
     };
 
     return NextResponse.json({

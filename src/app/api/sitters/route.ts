@@ -46,6 +46,11 @@ export async function GET(request: NextRequest) {
             specialty: true
           }
         },
+        offeredServices: {
+          include: {
+            service: true
+          }
+        },
         reviews: {
           include: {
             owner: true
@@ -62,12 +67,10 @@ export async function GET(request: NextRequest) {
       id: sitter.id,
       name: sitter.name,
       type: sitter.specialties.map(s => s.specialty.name).join(', ') || 'Cuidador',
-      rating: sitter.rating,
-      reviews: sitter.totalReviews,
       distance: '2.5 km', // Mock - pode ser calculado com coordenadas reais
       price: sitter.hourlyRate ? `R$ ${sitter.hourlyRate.toFixed(2)}/hora` : 'R$ 50,00/hora',
       image: sitter.avatar || '/placeholder-pet.jpg',
-      services: sitter.specialties.map(s => s.specialty.name),
+      services: sitter.offeredServices.map(s => s.service.name),
       about: sitter.bio || 'Cuidador experiente e apaixonado por animais.',
       experience: sitter.experience,
       address: sitter.address ? `${sitter.address.street}, ${sitter.address.number} - ${sitter.address.neighborhood}, ${sitter.address.city}` : 'Endereço não informado',
@@ -80,7 +83,7 @@ export async function GET(request: NextRequest) {
       caregivers
     });
 
-  } catch (error) {
+  } catch (error:any) {
     console.error('Erro ao buscar cuidadores:', error);
     console.error('Detalhes do erro:', {
       message: error.message,

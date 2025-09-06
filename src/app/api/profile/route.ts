@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
       address: '',
       bio: '',
       experience: '',
-      hourlyRate: null
+      hourlyRate: null as number | null
     }
 
     if (user.userType === 'SITTER' && user.sitter) {

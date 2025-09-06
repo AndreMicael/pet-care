@@ -47,7 +47,6 @@ export async function GET(
       id: sitter.id,
       name: sitter.name,
       type: sitter.specialties.map(s => s.specialty.name).join(', ') || 'Cuidador',
-      distance: '2.5 km', // Mock - pode ser calculado com coordenadas reais
       price: sitter.hourlyRate ? `R$ ${sitter.hourlyRate.toFixed(2)}/hora` : 'R$ 50,00/hora',
       image: sitter.avatar || '/placeholder-pet.jpg',
       services: sitter.offeredServices.map(s => s.service.name),

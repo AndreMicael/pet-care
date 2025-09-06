@@ -1,76 +1,97 @@
 'use client'
 
 import Link from 'next/link'
-import React from 'react'
-import { useSession, signOut } from 'next-auth/react'
-import { useAuth } from '@/hooks/useAuth'
+import React, { useState } from 'react'
+import { Heart, Menu, X, Search, UserPlus } from 'lucide-react'
 
 const Navbar = () => {
-  const { data: session, status } = useSession()
-  const { user, isAuthenticated } = useAuth()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  const handleSignOut = () => {
-    signOut({ callbackUrl: '/' })
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false)
   }
 
   return (
-    <div className="bg-[#4f30cb] flex justify-between flex-row items-center p-4 shadow-sm">
-      <Link href="/" className="flex items-center gap-3">
-        <h1 className="text-2xl font-fredoka font-bold text-[#ffb347]">PetCare</h1>
-      </Link>
+    <nav className="bg-white shadow-lg border-b border-gray-100 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 group" onClick={closeMobileMenu}>
+            <div className="bg-gradient-to-r from-[#4f30cb] to-[#6b46c1] p-2 rounded-xl group-hover:scale-105 transition-transform">
+              <Heart className="h-6 w-6 text-white" />
+            </div>
+            <h1 className="text-2xl font-fredoka font-bold bg-gradient-to-r from-[#4f30cb] to-[#6b46c1] bg-clip-text text-transparent">
+              PetCare
+            </h1>
+          </Link>
 
-      <div className="flex text-white flex-row gap-6 items-center">
-        <Link 
-          href="/buscar-cuidador" 
-          className="hover:text-[#ffb347] transition-colors font-medium"
-        >
-          Buscar Cuidador
-        </Link>
-        
-        {/* {status === "loading" ? (
-          <div className="bg-white/20 px-4 py-2 rounded-lg">
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <Link 
+              href="/buscar-cuidador" 
+              className="flex items-center gap-2 text-gray-700 hover:text-[#4f30cb] transition-colors font-medium group"
+            >
+              <Search className="h-4 w-4 group-hover:scale-110 transition-transform" />
+              Buscar Cuidador
+            </Link>
+            
+            <Link 
+              href="/cadastro"
+              className="flex items-center gap-2 bg-gradient-to-r from-[#4f30cb] to-[#6b46c1] text-white px-4 py-2 rounded-lg hover:from-[#4527a8] hover:to-[#553c9a] transition-all font-medium shadow-md hover:shadow-lg"
+            >
+              <UserPlus className="h-4 w-4" />
+              Cadastrar Cuidador
+            </Link>
+
           </div>
-        ) : isAuthenticated ? (
-          <div className="flex items-center gap-4">
-            <span className="text-sm">
-              Olá, {user?.name || user?.email}
-            </span>
-            <Link 
-              href="/dashboard" 
-              className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors font-medium"
-            >
-              Dashboard
-            </Link>
-            <Link 
-              href="/perfil" 
-              className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors font-medium"
-            >
-              Perfil
-            </Link>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
             <button
-              onClick={handleSignOut}
-              className="bg-red-500/20 hover:bg-red-500/30 px-4 py-2 rounded-lg transition-colors font-medium"
+              onClick={toggleMobileMenu}
+              className="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+              aria-label="Toggle menu"
             >
-              Sair
+              {isMobileMenuOpen ? (
+                <X className="h-5 w-5 text-gray-700" />
+              ) : (
+                <Menu className="h-5 w-5 text-gray-700" />
+              )}
             </button>
           </div>
-        ) : (
-          <Link 
-            href="/login" 
-            className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors font-medium"
-          >
-            Entrar
-          </Link>
-        )} */}
-        <Link 
-          href="/cadastro-petsitter"
-          className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors font-medium"
-        >
-          Cadastrar Cuidador
-        </Link>
+        </div>
+
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-100 shadow-lg">
+              <Link 
+                href="/buscar-cuidador" 
+                className="flex items-center gap-3 text-gray-700 hover:text-[#4f30cb] hover:bg-gray-50 px-4 py-3 rounded-lg transition-colors font-medium"
+                onClick={closeMobileMenu}
+              >
+                <Search className="h-5 w-5" />
+                Buscar Cuidador
+              </Link>
+              
+              <Link 
+                href="/cadastro"
+                className="flex items-center gap-3 bg-gradient-to-r from-[#4f30cb] to-[#6b46c1] text-white px-4 py-3 rounded-lg hover:from-[#4527a8] hover:to-[#553c9a] transition-all font-medium mx-2"
+                onClick={closeMobileMenu}
+              >
+                <UserPlus className="h-5 w-5" />
+                Cadastrar Cuidador
+              </Link>
+
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+    </nav>
   )
 }
 

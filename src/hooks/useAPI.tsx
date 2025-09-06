@@ -5,7 +5,6 @@ interface Caregiver {
   id: string;
   name: string;
   type: string;
-  distance: string;
   price: string;
   image: string;
   services: string[];
@@ -44,7 +43,6 @@ const mockCaregivers: Caregiver[] = [
     id: '1',
     name: 'Ana Silva',
     type: 'Cuidador de Pets',
-    distance: '2.5 km',
     price: 'R$ 80/dia',
     image: 'https://i.pravatar.cc/150?img=44',
     services: ['Cães de grande porte', 'Passeio', 'Aplica medicação', 'Day Care'],
@@ -54,7 +52,6 @@ const mockCaregivers: Caregiver[] = [
     id: '2',
     name: 'Carlos Santos',
     type: 'Veterinário',
-    distance: '1.8 km',
     price: 'R$ 120/dia',
     image: 'https://i.pravatar.cc/150?img=13',
     services: ['Consultas veterinárias', 'Emergências', 'Medicação', 'Cuidados especiais'],
@@ -64,7 +61,6 @@ const mockCaregivers: Caregiver[] = [
     id: '3',
     name: 'Maria Oliveira',
     type: 'Pet Sitter',
-    distance: '3.2 km',
     price: 'R$ 90/dia',
     image: 'https://i.pravatar.cc/150?img=25',
     services: ['Gatos', 'Pets idosos', 'Necessidades especiais', 'Hospedagem'],

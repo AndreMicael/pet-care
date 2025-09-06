@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, ArrowUpDown, MapPin } from 'lucide-react';
+import { Search, ArrowUpDown } from 'lucide-react';
 import { useCaregivers } from '../../hooks/useAPI';
 import { ImageWithFallback } from '@/app/(components)/ImageWithFallback';
 import { useRouter } from 'next/navigation';
@@ -9,7 +9,6 @@ interface Caregiver {
   id: string;
   name: string;
   type: string;
-  distance: string;
   price: string;
   image: string;
   services: string[];
@@ -114,13 +113,6 @@ export default function CaregiverList({ onBack, onSelectCaregiver }: CaregiverLi
                     {caregiver.type}
                   </p>
                   
-                  {/* Distance */}
-                  <div className="flex items-center gap-1 mb-2">
-                    <MapPin className="w-3 h-3 text-gray-400" />
-                    <span className="text-gray-600 text-xs">
-                      {caregiver.distance}
-                    </span>
-                  </div>
 
                   {/* Services */}
                   <div className="flex gap-1 flex-wrap">
@@ -162,7 +154,6 @@ export default function CaregiverList({ onBack, onSelectCaregiver }: CaregiverLi
                 </p>
               </div>
               <div className="flex items-center gap-2 bg-white/20 px-3 py-1.5 rounded-lg">
-                <MapPin className="w-4 h-4" />
                 <span className="text-sm">Cuiabá - MT</span>
               </div>
             </div>
@@ -265,11 +256,6 @@ export default function CaregiverList({ onBack, onSelectCaregiver }: CaregiverLi
                           </div>
                         </div>
 
-                        {/* Distance */}
-                        <div className="flex items-center gap-1 text-gray-600 text-sm mb-3">
-                          <MapPin className="w-3 h-3" />
-                          <span>{caregiver.distance}</span>
-                        </div>
 
                         {/* Services */}
                         <div className="flex gap-2 flex-wrap">

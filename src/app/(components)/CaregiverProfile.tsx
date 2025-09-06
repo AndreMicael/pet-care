@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, Calendar, MessageCircle, MapPin, Heart } from 'lucide-react';
+import { ArrowLeft, Calendar, MessageCircle, Heart } from 'lucide-react';
 import { ImageWithFallback } from '@/app/(components)/ImageWithFallback';
 import { useRouter } from 'next/navigation';
 import type { Caregiver } from './CaregiverList';
@@ -67,13 +67,6 @@ export default function CaregiverProfile({ caregiver, onBack, onSchedule }: Care
                   {caregiver.type}
                 </p>
                 
-                {/* Distance */}
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-3 h-4 text-gray-400" />
-                  <span className="text-gray-600 text-sm">
-                    {caregiver.distance}
-                  </span>
-                </div>
               </div>
             </div>
 
@@ -158,10 +151,6 @@ export default function CaregiverProfile({ caregiver, onBack, onSchedule }: Care
                     </h1>
                     <p className="text-purple-200 mb-3">{caregiver.type}</p>
                     
-                    <div className="flex items-center gap-1 text-white/90 text-sm mb-3">
-                      <MapPin className="w-4 h-4" />
-                      <span>{caregiver.distance}</span>
-                    </div>
 
                     <div className="text-2xl font-bold text-green-300">
                       {caregiver.price}

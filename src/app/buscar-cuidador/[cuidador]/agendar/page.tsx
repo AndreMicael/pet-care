@@ -79,10 +79,6 @@ export default function AgendarPage() {
                 </h3>
                 <p className="text-gray-600 text-sm">{caregiver.type}</p>
                 <div className="flex items-center gap-4 mt-2">
-                  <div className="flex items-center gap-1 text-gray-600">
-                    <MapPin className="w-4 h-4" />
-                    <span className="text-sm">{caregiver.distance}</span>
-                  </div>
                   <div className="flex items-center gap-1 text-green-600">
                     <Calendar className="w-4 h-4" />
                     <span className="text-sm font-semibold">{caregiver.price}</span>

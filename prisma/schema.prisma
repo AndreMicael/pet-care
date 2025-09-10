@@ -87,7 +87,7 @@ model Owner {
   email        String        @unique
   phone        String
   addressId    String
-  avatar       String?      
+  avatar       String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   address      Address       @relation(fields: [addressId], references: [id])
@@ -100,28 +100,28 @@ model Owner {
 }
 
 model Sitter {
-  id           String            @id @default(cuid())
-  userId       String            @unique
-  name         String
-  email        String            @unique
-  phone        String
-  addressId    String
-  avatar       String?           // URL da imagem (para compatibilidade)
-  avatarData   Bytes?            @db.LongBlob // Dados binários da imagem
-  avatarType   String?           // Tipo MIME da imagem (ex: image/jpeg, image/png)
-  bio          String?
-  experience   String?
-  rating       Float             @default(0)
-  totalReviews Int               @default(0)
-  isActive     Boolean           @default(true)
-  hourlyRate   Float?
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  reservations Reservation[]
-  reviews      Review[]
-  address      Address           @relation(fields: [addressId], references: [id])
-  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  specialties  SitterSpecialty[]
+  id              String            @id @default(cuid())
+  userId          String            @unique
+  name            String
+  email           String            @unique
+  phone           String
+  addressId       String
+  avatar          String?
+  bio             String?
+  experience      String?
+  rating          Float             @default(0)
+  totalReviews    Int               @default(0)
+  isActive        Boolean           @default(true)
+  hourlyRate      Float?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  avatarData      Bytes?
+  avatarType      String?
+  reservations    Reservation[]
+  reviews         Review[]
+  address         Address           @relation(fields: [addressId], references: [id])
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialties     SitterSpecialty[]
   offeredServices SitterService[]
 
   @@index([addressId], map: "Sitter_addressId_fkey")
@@ -223,12 +223,12 @@ model SitterSpecialty {
 }
 
 model PetService {
-  id          String    @id @default(cuid())
-  name        String    @unique
+  id          String          @id @default(cuid())
+  name        String          @unique
   description String?
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  isActive    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
   sitters     SitterService[]
 
   @@map("pet_services")
@@ -238,11 +238,11 @@ model SitterService {
   sitterId    String
   serviceId   String
   price       Float?
-  isAvailable Boolean @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  sitter      Sitter     @relation(fields: [sitterId], references: [id], onDelete: Cascade)
+  isAvailable Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   service     PetService @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  sitter      Sitter     @relation(fields: [sitterId], references: [id], onDelete: Cascade)
 
   @@id([sitterId, serviceId])
   @@index([serviceId], map: "SitterService_serviceId_fkey")

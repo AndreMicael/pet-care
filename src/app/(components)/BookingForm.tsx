@@ -402,7 +402,7 @@ export default function BookingForm({ caregiver, onBack, onSubmit }: BookingForm
                     <div className="flex items-center justify-center gap-1 mb-2">
                       <Star className="w-4 h-4 text-yellow-400 fill-current" />
                       <span className="text-gray-600 text-sm">
-                        {caregiver.rating} ({caregiver.reviews})
+                        {caregiver.rating || 5.0} ({caregiver.reviews || 0})
                       </span>
                     </div>
                   </div>

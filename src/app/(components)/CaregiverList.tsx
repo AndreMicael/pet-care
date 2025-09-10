@@ -13,6 +13,10 @@ interface Caregiver {
   image: string;
   services: string[];
   about?: string;
+  rating?: number;
+  reviews?: number;
+  phone?: string;
+  email?: string;
 }
 
 interface CaregiverListProps {

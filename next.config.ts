@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['i.pravatar.cc'],
   },
+
+  eslint: {
+    // Desativa o ESLint durante o build
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;

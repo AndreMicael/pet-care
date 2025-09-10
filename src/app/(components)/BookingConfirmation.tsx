@@ -61,7 +61,7 @@ export default function BookingConfirmation({ caregiver, bookingData, onBackToHo
                 <div className="flex items-center gap-1 mt-1">
                   <span className="text-yellow-500">⭐</span>
                   <span className="text-sm text-gray-600">
-                    {caregiver.rating} ({caregiver.reviews} avaliações)
+                    {caregiver.rating || 5.0} ({caregiver.reviews || 0} avaliações)
                   </span>
                 </div>
               </div>
@@ -175,7 +175,7 @@ export default function BookingConfirmation({ caregiver, bookingData, onBackToHo
           
           <Button 
             variant="outline"
-            onClick={() => window.open(`https://wa.me/55${caregiver.rating}`, '_blank')}
+            onClick={() => window.open(`https://wa.me/55${caregiver.phone || '11999999999'}`, '_blank')}
             className="w-full border-[#4f30cb] text-[#4f30cb] hover:bg-[#4f30cb] hover:text-white py-3 text-base font-semibold"
           >
             Entrar em Contato Direto
@@ -233,7 +233,7 @@ export default function BookingConfirmation({ caregiver, bookingData, onBackToHo
                         <div className="flex items-center gap-1 mt-1">
                           <Star className="w-4 h-4 text-yellow-400 fill-current" />
                           <span className="text-gray-600 text-sm">
-                            {caregiver.rating} ({caregiver.reviews})
+                            {caregiver.rating || 5.0} ({caregiver.reviews || 0})
                           </span>
                         </div>
                       </div>
@@ -364,7 +364,7 @@ export default function BookingConfirmation({ caregiver, bookingData, onBackToHo
                 
                 <Button 
                   variant="outline"
-                  onClick={() => window.open(`https://wa.me/55${caregiver.rating}`, '_blank')}
+                  onClick={() => window.open(`https://wa.me/55${caregiver.phone || '11999999999'}`, '_blank')}
                   className="w-full border-[#4f30cb] text-[#4f30cb] hover:bg-[#4f30cb] hover:text-white py-3 font-semibold rounded-lg"
                 >
                   <MessageCircle className="w-4 h-4 mr-2" />

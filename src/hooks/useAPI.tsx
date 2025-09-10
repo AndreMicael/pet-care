@@ -13,6 +13,8 @@ interface Caregiver {
   address?: string;
   phone?: string;
   email?: string;
+  rating?: number;
+  reviews?: number;
 }
 
 interface BookingData {

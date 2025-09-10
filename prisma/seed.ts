@@ -222,6 +222,9 @@ async function main() {
       rating: 4.8,
       totalReviews: 127,
       hourlyRate: 45.00,
+      dayRate: 120.00,
+      weekRate: 600.00,
+      monthRate: 2000.00,
       specialties: ['Day Care', 'Hospedagem', 'Passeio', 'Cães de Grande Porte']
     },
     {
@@ -243,6 +246,9 @@ async function main() {
       rating: 4.9,
       totalReviews: 89,
       hourlyRate: 60.00,
+      dayRate: 150.00,
+      weekRate: 800.00,
+      monthRate: 2800.00,
       specialties: ['Aplicação de Medicação', 'Necessidades Especiais', 'Pets Idosos', 'Hospedagem']
     },
     {
@@ -264,6 +270,9 @@ async function main() {
       rating: 4.7,
       totalReviews: 156,
       hourlyRate: 40.00,
+      dayRate: 100.00,
+      weekRate: 500.00,
+      monthRate: 1800.00,
       specialties: ['Gatos', 'Pets Idosos', 'Necessidades Especiais', 'Visita em Casa']
     },
     {
@@ -285,6 +294,9 @@ async function main() {
       rating: 4.6,
       totalReviews: 78,
       hourlyRate: 35.00,
+      dayRate: 80.00,
+      weekRate: 400.00,
+      monthRate: 1500.00,
       specialties: ['Passeio', 'Cães de Grande Porte', 'Day Care']
     },
     {
@@ -306,6 +318,9 @@ async function main() {
       rating: 4.8,
       totalReviews: 94,
       hourlyRate: 50.00,
+      dayRate: 130.00,
+      weekRate: 700.00,
+      monthRate: 2500.00,
       specialties: ['Pets Idosos', 'Necessidades Especiais', 'Aplicação de Medicação', 'Hospedagem']
     }
   ]
@@ -319,9 +334,8 @@ async function main() {
       update: {},
       create: {
         name: sitterData.name,
-        email: sitterData.email,
-        userType: 'SITTER',
-        emailVerified: new Date()
+        email: sitterData.email, 
+        userType: 'SITTER'
       }
     })
 
@@ -359,9 +373,12 @@ async function main() {
       addressId: address.id,
       bio: sitterData.bio,
       experience: sitterData.experience,
-        rating: sitterData.rating,
-        totalReviews: sitterData.totalReviews,
-        hourlyRate: sitterData.hourlyRate
+      rating: sitterData.rating,
+      totalReviews: sitterData.totalReviews,
+      hourlyRate: sitterData.hourlyRate,
+      dayRate: sitterData.dayRate,
+      weekRate: sitterData.weekRate,
+      monthRate: sitterData.monthRate
       }
     })
 

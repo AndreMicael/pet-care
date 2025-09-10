@@ -17,6 +17,12 @@ interface Caregiver {
   reviews?: number;
   phone?: string;
   email?: string;
+  prices?: {
+    hourly?: number;
+    daily?: number;
+    weekly?: number;
+    monthly?: number;
+  };
 }
 
 interface CaregiverListProps {

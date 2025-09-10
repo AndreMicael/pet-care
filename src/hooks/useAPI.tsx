@@ -15,6 +15,12 @@ interface Caregiver {
   email?: string;
   rating?: number;
   reviews?: number;
+  prices?: {
+    hourly?: number;
+    daily?: number;
+    weekly?: number;
+    monthly?: number;
+  };
 }
 
 interface BookingData {

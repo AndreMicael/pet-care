@@ -40,7 +40,7 @@ const Navbar = () => {
             </Link>
             
             <Link 
-              href="/cadastro"
+              href="/cadastro-petsitter"
               className="flex items-center gap-2 bg-gradient-to-r from-[#4f30cb] to-[#6b46c1] text-white px-4 py-2 rounded-lg hover:from-[#4527a8] hover:to-[#553c9a] transition-all font-medium shadow-md hover:shadow-lg"
             >
               <UserPlus className="h-4 w-4" />

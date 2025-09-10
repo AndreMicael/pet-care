@@ -14,6 +14,14 @@ const nextConfig: NextConfig = {
     // Desativa o ESLint durante o build
     ignoreDuringBuilds: true,
   },
+
+  // Configuração para Prisma no Vercel
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals.push('@prisma/client');
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

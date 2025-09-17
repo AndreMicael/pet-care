@@ -66,14 +66,20 @@ export async function GET(request: NextRequest) {
     const caregivers = sitters.map(sitter => {
       // Determinar o preço principal baseado na disponibilidade
       let priceDisplay = 'R$ 50,00/dia';
-      if (sitter.dayRate) {
+      let priceUnit = '/dia';
+      
+      if (sitter.dayRate && sitter.dayRate > 0) {
         priceDisplay = `R$ ${sitter.dayRate.toFixed(2)}/dia`;
-      } else if (sitter.hourlyRate) {
+        priceUnit = '/dia';
+      } else if (sitter.hourlyRate && sitter.hourlyRate > 0) {
         priceDisplay = `R$ ${sitter.hourlyRate.toFixed(2)}/hora`;
-      } else if (sitter.weekRate) {
+        priceUnit = '/hora';
+      } else if (sitter.weekRate && sitter.weekRate > 0) {
         priceDisplay = `R$ ${sitter.weekRate.toFixed(2)}/semana`;
-      } else if (sitter.monthRate) {
+        priceUnit = '/semana';
+      } else if (sitter.monthRate && sitter.monthRate > 0) {
         priceDisplay = `R$ ${sitter.monthRate.toFixed(2)}/mês`;
+        priceUnit = '/mês';
       }
 
       return {
@@ -90,10 +96,15 @@ export async function GET(request: NextRequest) {
         email: sitter.email,
         // Adicionar todos os preços disponíveis
         prices: {
-          hourly: sitter.hourlyRate,
-          daily: sitter.dayRate,
-          weekly: sitter.weekRate,
-          monthly: sitter.monthRate
+          hourly: sitter.hourlyRate || 0,
+          daily: sitter.dayRate || 0,
+          weekly: sitter.weekRate || 0,
+          monthly: sitter.monthRate || 0
+        },
+        // Adicionar informações sobre o preço principal
+        mainPrice: {
+          value: sitter.dayRate || sitter.hourlyRate || sitter.weekRate || sitter.monthRate || 50,
+          unit: priceUnit
         }
       };
     });

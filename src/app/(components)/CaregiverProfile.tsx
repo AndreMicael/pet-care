@@ -171,12 +171,9 @@ export default function CaregiverProfile({ caregiver, onBack, onSchedule }: Care
 
                 <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-lg transition-all flex items-center justify-center gap-2">
                   <MessageCircle className="w-4 h-4" />
-                  Chat
+                  Chat (Em breve)
                 </button>
-
-                <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-3 rounded-lg transition-all">
-                  <Heart className="w-4 h-4" />
-                </button>
+ 
               </div>
 
               {/* About Section */}

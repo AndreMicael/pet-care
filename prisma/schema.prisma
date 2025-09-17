@@ -9,20 +9,21 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String   @unique
-  image     String?
-  password  String?  @db.Text
-  userType  UserType @default(OWNER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  owner     Owner?
-  sitter    Sitter?
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   @db.Text
+  userType      UserType  @default(OWNER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  Account       Account[]
+  owner         Owner?
+  Session       Session[]
+  sitter        Sitter?
 }
-
 
 model Address {
   id           String   @id @default(cuid())
@@ -75,13 +76,13 @@ model Sitter {
   totalReviews    Int               @default(0)
   isActive        Boolean           @default(true)
   hourlyRate      Float?
-  dayRate         Float?
-  weekRate        Float?
-  monthRate       Float?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   avatarData      Bytes?
   avatarType      String?
+  dayRate         Float?
+  monthRate       Float?
+  weekRate        Float?
   reservations    Reservation[]
   reviews         Review[]
   address         Address           @relation(fields: [addressId], references: [id])
@@ -229,6 +230,43 @@ model Review {
 
   @@index([ownerId], map: "Review_ownerId_fkey")
   @@index([sitterId], map: "Review_sitterId_fkey")
+}
+
+model Account {
+  id                String  @id
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  User              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId], map: "Account_userId_fkey")
+}
+
+model Session {
+  id           String   @id
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Session_userId_fkey")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 
 enum UserType {
